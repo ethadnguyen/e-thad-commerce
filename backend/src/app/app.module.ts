@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigsModule } from 'src/config/config.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from '../core/guards/role.guard';
+import { RolesGuard } from '../shared/guards/role.guard';
 
 @Module({
   imports: [

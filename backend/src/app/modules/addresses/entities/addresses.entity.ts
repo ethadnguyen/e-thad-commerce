@@ -1,9 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Address } from '../../addresses/entities/addresses.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Customer } from '../../customers/entities/customers.entity';
 import { Order } from '../../orders/entities/orders.entity';
 
 @Entity()
-export class Customer {
+export class Address {
   @PrimaryGeneratedColumn({
     type: 'bigint',
   })
@@ -13,32 +13,43 @@ export class Customer {
     type: 'varchar',
     length: 255,
   })
-  name: string;
+  label: string;
 
   @Column({
     type: 'varchar',
     length: 255,
   })
-  email: string;
+  country: string;
 
   @Column({
     type: 'varchar',
     length: 255,
   })
-  phone: string;
+  province: string;
 
   @Column({
     type: 'varchar',
     length: 255,
   })
-  status: string;
+  district: string;
 
   @Column({
     type: 'varchar',
     length: 255,
-    array: true,
   })
-  roles: string[];
+  ward: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  street: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  postal_code: string;
 
   @Column({
     type: 'timestamp',
@@ -53,9 +64,9 @@ export class Customer {
   })
   updated_at: Date;
 
-  @OneToMany(() => Address, (address) => address.customer)
-  addresses: Address[];
+  @ManyToOne(() => Customer, (customer) => customer.addresses)
+  customer: Customer;
 
-  @OneToMany(() => Order, (order) => order.customer)
-  orders: Order[];
+  @ManyToOne(() => Order, (order) => order.addresses)
+  order: Order;
 }
