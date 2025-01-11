@@ -1,6 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Customer } from '../../customers/entities/customers.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Order } from '../../orders/entities/orders.entity';
+import { User } from '../../users/entities/users.entity';
 
 @Entity()
 export class Address {
@@ -65,8 +71,8 @@ export class Address {
   updated_at: Date;
 
   @ManyToOne(() => Customer, (customer) => customer.addresses)
-  customer: Customer;
+  user: User;
 
-  @ManyToOne(() => Order, (order) => order.addresses)
-  order: Order;
+  @OneToMany(() => Order, (order) => order.address)
+  orders: Order[];
 }

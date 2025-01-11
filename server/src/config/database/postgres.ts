@@ -24,7 +24,8 @@ export const POSTGRESQL = TypeOrmModule.forRootAsync({
         '*.entity.{ts,js}',
       ),
     ],
-    synchronize: true,
+    migrations: [join(__dirname, '..', '..', 'migrations', '*.{ts,js}')],
+    synchronize: false,
     logging: false,
   }),
 });

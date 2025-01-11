@@ -3,10 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigsModule } from 'src/config/config.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from '../core/guards/role.guard';
 import { AuthModule } from './modules/auth/auth.module';
-import { CustomersModule } from './modules/customers/customers.module';
+import { CustomersModule } from './modules/users/users.module';
+import { HttpExceptionFilter } from 'src/core/filters/http-exception.filter';
+import { PaginationService } from 'src/common/services/pagination.service';
 
 @Module({
   imports: [
@@ -31,6 +33,12 @@ import { CustomersModule } from './modules/customers/customers.module';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    PaginationService,
   ],
+  exports: [PaginationService],
 })
 export class AppModule {}

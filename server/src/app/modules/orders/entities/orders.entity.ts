@@ -5,8 +5,9 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Customer } from '../../customers/entities/customers.entity';
 import { Address } from '../../addresses/entities/addresses.entity';
+import { OrderItem } from './order-items.entity';
+import { User } from '../../users/entities/users.entity';
 
 export enum OrderStatus {
   PENDING = 'Pending',
@@ -47,9 +48,12 @@ export class Order {
   })
   phone: string;
 
-  @ManyToOne(() => Customer, (customer) => customer.orders)
-  customer: Customer;
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  orderItems: OrderItem[];
 
-  @OneToMany(() => Address, (address) => address.order)
-  addresses: Address[];
+  @ManyToOne(() => User, (customer) => customer.orders)
+  customer: User;
+
+  @ManyToOne(() => Address, (address) => address.orders)
+  address: Address;
 }

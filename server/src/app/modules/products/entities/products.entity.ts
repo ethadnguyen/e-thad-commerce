@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+import { ProductPromotion } from '../../product-promotion/entities/product-promotion.entity';
+import { Review } from '../../reviews/entities/review.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { OrderItem } from '../../orders/entities/order-items.entity';
 
 @Entity()
 export class Product {
@@ -15,6 +25,7 @@ export class Product {
 
   @Column({
     type: 'text',
+    nullable: true,
   })
   description: string;
 
@@ -29,6 +40,21 @@ export class Product {
     type: 'int',
   })
   stock_quantity: number;
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  orderItems: OrderItem[];
+
+  @OneToMany(
+    () => ProductPromotion,
+    (productPromotion) => productPromotion.product,
+  )
+  productPromotions: ProductPromotion[];
 
   @Column({
     type: 'timestamp',

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CustomersModule } from '../customers/customers.module';
+import { CustomersModule } from '../users/users.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';

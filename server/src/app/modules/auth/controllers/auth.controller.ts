@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { SkipAuth } from '../../../../core/decorators/auth.decorator';
-import { SignInDto } from '../dto/sign-in.dto';
+import { SignInDto } from '../types/sign-in.dto';
 import { Response, Request } from 'express';
 
 @Controller('auth')
