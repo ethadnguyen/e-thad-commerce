@@ -1,44 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigsModule } from 'src/config/config.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from '../core/guards/role.guard';
-import { AuthModule } from './modules/auth/auth.module';
-import { CustomersModule } from './modules/users/users.module';
-import { HttpExceptionFilter } from 'src/core/filters/http-exception.filter';
-import { PaginationService } from 'src/common/services/pagination.service';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from 'src/config/database/database.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    ConfigsModule,
-    ThrottlerModule.forRoot([
-      {
-        ttl: 60000,
-        limit: 10,
-      },
-    ]),
-    AuthModule,
-    CustomersModule,
+    ConfigModule.forRoot({
+      envFilePath: `${process.cwd()}/src/config/env/${process.env.NODE_ENV}.env`,
+      isGlobal: true,
+    }),
+    DatabaseModule,
+    PassportModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-    },
-    PaginationService,
-  ],
-  exports: [PaginationService],
+  providers: [AppService],
 })
 export class AppModule {}
