@@ -11,4 +11,5 @@ export enum ErrorMessage {
   NEWS_NOT_FOUND = 'News note found',
   ACCESS_DENIED = 'Access Denied',
   TOKEN_INVALIDATED = 'Token invalidated',
+  PHONE_INVALID = 'Phone invalid',
 }
