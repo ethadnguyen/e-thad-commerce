@@ -1,4 +1,4 @@
-import { InvalidatedTokenRepository } from '@/repositories/invalidated_token.repositories';
+import { InvalidatedTokenRepository } from '../../app/modules/invalidated_token/repositories/invalidated_token.repositories';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';

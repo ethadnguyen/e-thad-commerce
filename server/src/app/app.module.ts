@@ -4,6 +4,11 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from 'src/config/database/database.module';
 import { PassportModule } from '@nestjs/passport';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
+import { CategoryModule } from './modules/categories/categories.module';
+import { ProductModule } from './modules/products/products.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,8 +18,17 @@ import { PassportModule } from '@nestjs/passport';
     }),
     DatabaseModule,
     PassportModule,
+    AuthModule,
+    CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

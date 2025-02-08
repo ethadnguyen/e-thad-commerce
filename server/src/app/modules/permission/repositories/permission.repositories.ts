@@ -10,6 +10,22 @@ export class PermissionRepository {
     private repo: Repository<Permission>,
   ) {}
 
+  async findAll(paginationOptions: {
+    skip: number;
+    take: number;
+  }): Promise<[Permission[], number]> {
+    const [permissions, total] = await this.repo.findAndCount({
+      skip: paginationOptions.skip,
+      take: paginationOptions.take,
+    });
+
+    return [permissions, total];
+  }
+
+  async findById(id: number) {
+    return await this.repo.findOne({ where: { id } });
+  }
+
   async isPermissionTableEmpty(): Promise<boolean> {
     const count = await this.repo.count();
     return count === 0;

@@ -1,10 +1,16 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('permission', { schema: 'public' })
 export class Permission {
-  @PrimaryColumn({
+  @PrimaryGeneratedColumn({
+    type: 'bigint',
+  })
+  id: number;
+
+  @Column({
     type: 'varchar',
     length: 50,
+    unique: true,
   })
   name: string;
 

@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+
 dotenv.config({ path: `${process.cwd()}/src/config/env/dev.env` });
 
 import { DataSource } from 'typeorm';
@@ -11,6 +12,6 @@ export default new DataSource({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_DB,
   entities: [`${process.cwd()}/src/**/*.entity.ts`],
-  migrations: [__dirname + '../../migrations/*{.ts,.js}'],
+  migrations: [`${process.cwd()}/src/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
 });

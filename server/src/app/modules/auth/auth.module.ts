@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './services/auth.service';
 import { UserRepository } from '../users/repositories/user.repositories';
 import { InvalidatedTokenRepository } from '../invalidated_token/repositories/invalidated_token.repositories';
+import { AuthController } from './controllers/auth.controller';
 
 @Module({
   imports: [

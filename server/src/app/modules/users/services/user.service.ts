@@ -27,7 +27,7 @@ export class UserService {
     let userDb = await this.userRepo.findByEmail(input.email);
 
     if (userDb) {
-      throw new BadRequestException(ErrorMessage.EMAIL_EXITS);
+      throw new BadRequestException(ErrorMessage.EMAIL_EXISTS);
     }
 
     user.user_name = input.user_name;
@@ -87,7 +87,7 @@ export class UserService {
     if (input.email && input.email !== user.email) {
       const emailExists = await this.userRepo.findByEmail(input.email);
       if (emailExists) {
-        throw new BadRequestException(ErrorMessage.EMAIL_EXITS);
+        throw new BadRequestException(ErrorMessage.EMAIL_EXISTS);
       }
 
       user.email = input.email;
@@ -111,7 +111,7 @@ export class UserService {
     return updatedUser;
   }
 
-  async deleteUser(id: number) {
+  async deleteUserById(id: number) {
     const user = await this.userRepo.findById(id);
 
     if (!user) {

@@ -71,9 +71,12 @@ export class AuthService {
   async refresh(refreshToken: string) {
     try {
       await this.jwtService.verifyAsync(refreshToken);
+
       const decodedToken = this.jwtService.decode(refreshToken) as any;
 
       const { user_id: userId, token_id: tokenId } = decodedToken;
+
+      const user = await this.userRepo.findById(userId);
       if (!user) {
         throw new ForbiddenException(ErrorMessage.USER_NOT_FOUND);
       }
@@ -81,7 +84,6 @@ export class AuthService {
       const payload = this.createPayload(user);
 
       const accessToken = this.jwtService.sign(payload);
-
       const refreshTokenNew = await this.jwtService.signAsync(payload, {
         expiresIn: this.refreshTokenExpiry,
       });
