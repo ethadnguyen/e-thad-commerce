@@ -31,6 +31,7 @@ export class UserRepository {
     const [users, total] = await this.repo.findAndCount({
       skip: paginationOptions.skip,
       take: paginationOptions.take,
+      relations: ['role', 'role.permissions'],
     });
 
     return [users, total];

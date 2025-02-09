@@ -26,6 +26,10 @@ export class PermissionRepository {
     return await this.repo.findOne({ where: { id } });
   }
 
+  async findByName(name: string) {
+    return await this.repo.findOne({ where: { name } });
+  }
+
   async isPermissionTableEmpty(): Promise<boolean> {
     const count = await this.repo.count();
     return count === 0;
@@ -34,5 +38,19 @@ export class PermissionRepository {
   async create(permission: Permission) {
     const newPermission = await this.repo.save(permission);
     return newPermission;
+  }
+
+  async update(id: number, permission: Permission) {
+    await this.repo.update(id, permission);
+    return await this.findById(id);
+  }
+
+  async delete(id: number) {
+    const permission = await this.findById(id);
+    if (permission) {
+      await this.repo.delete(id);
+      return permission;
+    }
+    return null;
   }
 }

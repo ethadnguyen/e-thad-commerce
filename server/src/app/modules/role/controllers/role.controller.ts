@@ -32,7 +32,7 @@ export class RoleController {
     type: GetAllRoleRes,
   })
   async GetAllRoles(@Query() queryParams: GetAllRoleReq) {
-    await this.roleService.getAllRoles(queryParams);
+    return await this.roleService.getAllRoles(queryParams);
   }
 
   @Get(':name')
