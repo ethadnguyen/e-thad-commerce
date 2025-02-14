@@ -10,6 +10,7 @@ import { CreateProductInput } from './types/create-product.input';
 import { Product } from '../entities/products.entity';
 import { UpdateProductInput } from './types/update-product.input';
 import { CategoryRepository } from '../../categories/repositories/categories.repositories';
+import { ProductType } from '../enums/product-type.enum';
 
 @Injectable()
 export class ProductService {
@@ -40,12 +41,12 @@ export class ProductService {
   }
 
   async getProductById(id: number) {
-    const productDB = await this.productRepo.findById(id);
-    if (!productDB) {
-      throw new BadRequestException(ErrorMessage.USER_NOT_FOUND);
+    const product = await this.productRepo.findById(id);
+    if (!product) {
+      throw new BadRequestException(ErrorMessage.PRODUCT_NOT_FOUND);
     }
 
-    return productDB;
+    return product;
   }
 
   async createProduct(input: CreateProductInput) {
@@ -63,7 +64,8 @@ export class ProductService {
     product.stock = input.stock;
     product.images = input.images;
     product.is_active = input.is_active;
-    product.specifications = input.specifications;
+    product.type = input.type;
+    // product.specifications = input.specifications;
 
     return await this.productRepo.create(product);
   }
@@ -89,10 +91,11 @@ export class ProductService {
     productDB.price = input.price;
     productDB.stock = input.stock;
     productDB.images = input.images;
+    productDB.type = input.type;
     productDB.is_active = input.is_active;
-    productDB.specifications = input.specifications;
+    // productDB.specifications = input.specifications;
 
-    return await this.productRepo.update(productDB);
+    return await this.productRepo.update(productDB.id, productDB);
   }
 
   async deleteProduct(id: number) {

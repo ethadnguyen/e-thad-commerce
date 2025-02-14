@@ -6,8 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Category } from '../../categories/entities/categories.entity';
+import { ProductType } from '../enums/product-type.enum';
+import { CPU } from './cpu.entity';
+import { GPU } from './gpu.entity';
 
 @Entity('products')
 export class Product {
@@ -43,11 +47,11 @@ export class Product {
   @Column('simple-array', { nullable: true })
   images: string[];
 
-  @Column({
-    type: 'jsonb',
-    nullable: true,
-  })
-  specifications: object;
+  // @Column({
+  //   type: 'jsonb',
+  //   nullable: true,
+  // })
+  // specifications: object;
 
   @Column({
     type: 'boolean',
@@ -58,6 +62,19 @@ export class Product {
   @ManyToOne(() => Category, { nullable: false })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @Column({
+    type: 'enum',
+    enum: ProductType,
+    nullable: true,
+  })
+  type: ProductType;
+
+  @OneToOne(() => CPU, (cpu) => cpu.product, { cascade: true })
+  cpu?: CPU;
+
+  @OneToOne(() => GPU, (gpu) => gpu.product, { cascade: true })
+  gpu?: GPU;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -9,6 +9,7 @@ import {
   Query,
   ParseIntPipe,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProductService } from '../services/products.service';
 import { CreateProductReq } from './types/create-product.req';
@@ -23,6 +24,8 @@ import {
 import { ProductListRes } from './types/product-list.res';
 import { GetAllProductReq } from './types/get.all.product.req';
 import { Public } from 'src/common/decorators/public.decorator';
+import { CpuProductService } from '../services/cpu-product.service';
+import { ProductType } from '../enums/product-type.enum';
 
 @ApiTags('Products')
 @Public()
@@ -34,13 +37,7 @@ export class ProductController {
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a new product' })
-  @ApiResponse({
-    status: 201,
-    type: ProductRes,
-  })
-  async create(
-    @Body() createProductReq: CreateProductReq,
-  ): Promise<ProductRes> {
+  async create(@Body() createProductReq: CreateProductReq) {
     return this.productService.createProduct(createProductReq);
   }
 

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../entities/products.entity';
+import { CPU } from '../entities/cpu.entity';
+import { ProductType } from '../enums/product-type.enum';
 
 @Injectable()
 export class ProductRepository {
@@ -19,10 +21,14 @@ export class ProductRepository {
   }
 
   async findById(id: number): Promise<Product> {
-    return await this.repo.findOne({
-      where: { id },
-      relations: ['category'],
-    });
+    const queryBuilder = this.repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.cpu', 'cpu')
+      .leftJoinAndSelect('product.gpu', 'gpu')
+      .where('product.id = :id', { id });
+
+    return await queryBuilder.getOne();
   }
 
   async findAll(
@@ -32,22 +38,24 @@ export class ProductRepository {
     },
     category?: number,
   ): Promise<[Product[], number]> {
-    const queryBuilder = this.repo.createQueryBuilder('product');
-    queryBuilder.leftJoinAndSelect('product.category', 'category');
+    const queryBuilder = this.repo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.cpu', 'cpu')
+      .leftJoinAndSelect('product.gpu', 'gpu');
 
     if (category) {
       queryBuilder.andWhere('category.id = :category', { category });
     }
 
     queryBuilder.orderBy('product.created_at', 'DESC');
-    const [products, total] = await queryBuilder.getManyAndCount();
-    return [products, total];
+    return await queryBuilder.getManyAndCount();
   }
 
-  async update(product: Product): Promise<Product> {
-    const updatedProduct = await this.repo.save(product);
+  async update(id: number, product: Product): Promise<Product> {
+    await this.repo.update(id, product);
     return await this.repo.findOne({
-      where: { id: updatedProduct.id },
+      where: { id },
       relations: ['category'],
     });
   }

@@ -15,16 +15,20 @@ export class CpuRepository {
   }
 
   async findAll(): Promise<CPU[]> {
-    return await this.cpuRepo.find({
-      relations: ['product'],
-    });
+    return await this.cpuRepo
+      .createQueryBuilder('cpu')
+      .leftJoinAndSelect('cpu.product', 'product')
+      .leftJoinAndSelect('product.category', 'category')
+      .getMany();
   }
 
   async findById(id: number): Promise<CPU> {
-    return this.cpuRepo.findOne({
-      where: { id },
-      relations: ['product'],
-    });
+    return await this.cpuRepo
+      .createQueryBuilder('cpu')
+      .leftJoinAndSelect('cpu.product', 'product')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('cpu.id = :id', { id })
+      .getOne();
   }
 
   async update(id: number, cpu: Partial<CPU>): Promise<void> {

@@ -12,6 +12,7 @@ export enum ErrorMessage {
   TOKEN_INVALIDATED = 'Token invalidated',
   PHONE_INVALID = 'Phone invalid',
   ROLE_NOT_FOUND = 'Role not found',
+  PRODUCT_NOT_FOUND = 'Product not found',
   PERMISSION_NOT_FOUND = 'Permission not found',
   PERMISSION_EXISTS = 'Permission exists',
 }

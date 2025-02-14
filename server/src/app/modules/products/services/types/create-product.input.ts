@@ -1,4 +1,4 @@
-import { Category } from '../../../categories/entities/categories.entity';
+import { ProductType } from '../../enums/product-type.enum';
 
 export interface CreateProductInput {
   name: string;
@@ -7,6 +7,7 @@ export interface CreateProductInput {
   stock: number;
   category: number;
   images?: string[];
-  specifications?: object;
+  // specifications?: object;
+  type: ProductType;
   is_active?: boolean;
 }

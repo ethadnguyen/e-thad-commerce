@@ -47,10 +47,10 @@ export class UpdateProductReq {
   @IsString({ each: true })
   images?: string[];
 
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsObject()
-  specifications?: object;
+  // @ApiProperty({ required: false })
+  // @IsOptional()
+  // @IsObject()
+  // specifications?: object;
 
   @ApiProperty({ required: false })
   @IsOptional()

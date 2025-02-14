@@ -6,7 +6,7 @@ export class GPU {
   @PrimaryColumn()
   id: number;
 
-  @OneToOne(() => Product, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Product)
   @JoinColumn({ name: 'id' })
   product: Product;
 

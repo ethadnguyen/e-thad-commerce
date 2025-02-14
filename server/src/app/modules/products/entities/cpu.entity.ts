@@ -1,20 +1,21 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Product } from './products.entity';
+import { SocketType } from '../enums/socket-type.enum';
 
 @Entity('cpu')
 export class CPU {
   @PrimaryColumn()
   id: number;
 
-  @OneToOne(() => Product, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Product)
   @JoinColumn({ name: 'id' })
   product: Product;
 
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'enum',
+    enum: SocketType,
   })
-  socketType: string;
+  socket_type: SocketType;
 
   @Column()
   cores: number;
@@ -22,11 +23,32 @@ export class CPU {
   @Column()
   threads: number;
 
-  @Column()
+  @Column('decimal', { precision: 3, scale: 1 })
   baseClock: number;
 
-  @Column()
+  @Column('decimal', { precision: 3, scale: 1 })
   boostClock: number;
+
+  @Column()
+  wattage: string;
+
+  @Column()
+  pCores: number;
+
+  @Column()
+  eCores: number;
+
+  @Column('decimal', { precision: 3, scale: 1 })
+  pCoreBaseClock: number;
+
+  @Column('decimal', { precision: 3, scale: 1 })
+  pCoreBoostClock: number;
+
+  @Column('decimal', { precision: 3, scale: 1 })
+  eCoreBaseClock: number;
+
+  @Column('decimal', { precision: 3, scale: 1 })
+  eCoreBoostClock: number;
 
   @Column()
   tdp: number;
@@ -36,4 +58,13 @@ export class CPU {
     length: 255,
   })
   cache: string;
+
+  @Column()
+  pcie_version: string;
+
+  @Column()
+  pcie_slots: number;
+
+  @Column()
+  max_memory_capacity: number;
 }
