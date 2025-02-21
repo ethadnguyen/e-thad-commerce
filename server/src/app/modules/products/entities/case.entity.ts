@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Product } from './products.entity';
-import { MainboardType } from '../enums/mainboard-type.enum';
+import { MainboardFormFactor } from '../enums/mainboard-type.enum';
 
 @Entity('case')
 export class Case {
@@ -29,6 +29,9 @@ export class Case {
   @Column()
   max_gpu_length: number;
 
-  @Column()
-  mainboard_type: MainboardType;
+  @Column({
+    type: 'simple-array',
+    enum: MainboardFormFactor,
+  })
+  form_factor: MainboardFormFactor[];
 }

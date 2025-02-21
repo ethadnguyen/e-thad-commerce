@@ -5,6 +5,6 @@ export enum ProductType {
   MAINBOARD = 'MAINBOARD',
   STORAGE = 'STORAGE',
   POWER_SUPPLY = 'POWER_SUPPLY',
-  COOLER = 'COOLER',
+  COOLING = 'COOLING',
   CASE = 'CASE',
 }

@@ -21,9 +21,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { products } from '../data/products';
-import { categories, type Category } from '../data/categories';
-import { routes } from '../utils/routes';
+import { products } from '@/data/products';
+import { categories, type Category } from '@/data/categories';
+import { routes } from '@/utils/routes';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();

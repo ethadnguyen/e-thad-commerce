@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Product } from './products.entity';
-import { SocketType } from 'dgram';
+import { MainboardFormFactor } from '../enums/mainboard-type.enum';
+import { SocketType } from '../enums/socket-type.enum';
 
 @Entity('mainboard')
 export class Mainboard {
@@ -10,6 +11,9 @@ export class Mainboard {
   @OneToOne(() => Product)
   @JoinColumn({ name: 'id' })
   product: Product;
+
+  @Column()
+  form_factor: MainboardFormFactor;
 
   @Column()
   socket_type: SocketType;

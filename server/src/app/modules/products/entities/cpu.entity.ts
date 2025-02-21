@@ -17,10 +17,10 @@ export class CPU {
   })
   socket_type: SocketType;
 
-  @Column()
+  @Column({ nullable: true })
   cores: number;
 
-  @Column()
+  @Column({ nullable: true })
   threads: number;
 
   @Column('decimal', { precision: 3, scale: 1 })
@@ -30,24 +30,24 @@ export class CPU {
   boostClock: number;
 
   @Column()
-  wattage: string;
+  wattage: number;
 
-  @Column()
+  @Column({ nullable: true })
   pCores: number;
 
-  @Column()
+  @Column({ nullable: true })
   eCores: number;
 
-  @Column('decimal', { precision: 3, scale: 1 })
+  @Column('decimal', { precision: 3, scale: 1, nullable: true })
   pCoreBaseClock: number;
 
-  @Column('decimal', { precision: 3, scale: 1 })
+  @Column('decimal', { precision: 3, scale: 1, nullable: true })
   pCoreBoostClock: number;
 
-  @Column('decimal', { precision: 3, scale: 1 })
+  @Column('decimal', { precision: 3, scale: 1, nullable: true })
   eCoreBaseClock: number;
 
-  @Column('decimal', { precision: 3, scale: 1 })
+  @Column('decimal', { precision: 3, scale: 1, nullable: true })
   eCoreBoostClock: number;
 
   @Column()
@@ -62,9 +62,9 @@ export class CPU {
   @Column()
   pcie_version: string;
 
-  @Column()
+  @Column({ nullable: true })
   pcie_slots: number;
 
-  @Column()
+  @Column({ nullable: true })
   max_memory_capacity: number;
 }

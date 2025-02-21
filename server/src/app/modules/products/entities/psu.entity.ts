@@ -27,19 +27,22 @@ export class PSU {
   @Column()
   input_voltage: number;
 
-  @Column()
+  @Column({ nullable: true })
   fan_size: number;
 
-  @Column()
+  @Column({ nullable: true })
   fan_speed: number;
 
-  @Column()
+  @Column({ nullable: true })
   noise_level: number;
 
-  @Column()
+  @Column({ nullable: true })
   fan_bearing: string;
 
-  @Column()
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
   rgb: boolean;
 
   @Column({
@@ -47,7 +50,7 @@ export class PSU {
     enum: ATX12VType,
     default: ATX12VType.ATX12V_2_4,
   })
-  atx12vVersion: ATX12VType;
+  atx12v_version: ATX12VType;
 
   @Column()
   pcie_connectors: number;

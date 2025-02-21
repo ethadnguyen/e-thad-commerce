@@ -20,14 +20,14 @@ export class ProductService {
   ) {}
 
   async getAllProducts(queryParams: GetAllProductInput) {
-    const { page = 1, size = 10, category } = queryParams;
+    const { page = 1, size = 10, category_id } = queryParams;
 
     const [products, total] = await this.productRepo.findAll(
       {
         skip: (page - 1) * size,
         take: size,
       },
-      category,
+      category_id,
     );
 
     const totalPages = Math.ceil(total / size);
@@ -52,20 +52,25 @@ export class ProductService {
   async createProduct(input: CreateProductInput) {
     let product = new Product();
 
-    const categoryDB = await this.categoryRepo.findById(input.category);
+    const categories = await this.categoryRepo.findByIds(
+      Array.isArray(input.category_id)
+        ? input.category_id
+        : [input.category_id],
+    );
 
-    if (categoryDB) {
-      product.category = categoryDB;
+    if (categories.length > 0) {
+      product.categories = categories;
     }
 
-    product.name = input.name;
-    product.description = input.description;
-    product.price = input.price;
-    product.stock = input.stock;
-    product.images = input.images;
-    product.is_active = input.is_active;
-    product.type = input.type;
-    // product.specifications = input.specifications;
+    Object.assign(product, {
+      name: input.name,
+      description: input.description,
+      price: input.price,
+      stock: input.stock,
+      images: input.images,
+      is_active: input.is_active,
+      type: input.type,
+    });
 
     return await this.productRepo.create(product);
   }
@@ -76,26 +81,28 @@ export class ProductService {
       throw new NotFoundException(`Product with ID ${input.id} not found`);
     }
 
-    if (input.category) {
-      const categoryDB = await this.categoryRepo.findById(input.category);
-      if (!categoryDB) {
-        throw new NotFoundException(
-          `Category with ID ${input.category} not found`,
-        );
+    if (input.category_id) {
+      const categories = await this.categoryRepo.findByIds(
+        Array.isArray(input.category_id)
+          ? input.category_id
+          : [input.category_id],
+      );
+      if (categories.length > 0) {
+        productDB.categories = categories;
       }
-      productDB.category = categoryDB;
     }
 
-    productDB.name = input.name;
-    productDB.description = input.description;
-    productDB.price = input.price;
-    productDB.stock = input.stock;
-    productDB.images = input.images;
-    productDB.type = input.type;
-    productDB.is_active = input.is_active;
-    // productDB.specifications = input.specifications;
+    Object.assign(productDB, {
+      name: input.name,
+      description: input.description,
+      price: input.price,
+      stock: input.stock,
+      images: input.images,
+      type: input.type,
+      is_active: input.is_active,
+    });
 
-    return await this.productRepo.update(productDB.id, productDB);
+    return await this.productRepo.update(productDB);
   }
 
   async deleteProduct(id: number) {

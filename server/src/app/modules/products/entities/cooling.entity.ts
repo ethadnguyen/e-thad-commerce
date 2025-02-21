@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Product } from './products.entity';
-import { SocketType } from 'dgram';
 import { CoolingType } from '../enums/cooling-type.enum';
+import { SocketType } from '../enums/socket-type.enum';
 
 @Entity('cooling')
 export class Cooling {
@@ -19,17 +19,21 @@ export class Cooling {
   size: string;
 
   @Column({
-    type: 'array',
-    default: [],
+    type: 'simple-array',
+    enum: SocketType,
   })
   socket_support: SocketType[];
 
   @Column()
   fan_speed: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+  })
   noise_level: number;
 
   @Column()
-  fan_size: string;
+  fan_size: number;
 }

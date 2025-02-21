@@ -1,17 +1,39 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PsuRepository } from '../repositories/psu.repositories';
 import { ProductService } from './products.service';
-import { CreatePsuInput } from './types/create-psu.input';
-import { UpdatePsuInput } from './types/update-psu.input';
+import { CreatePsuInput } from './types/psu_types/create-psu.input';
+import { UpdatePsuInput } from './types/psu_types/update-psu.input';
 import { ProductType } from '../enums/product-type.enum';
 import { PSU } from '../entities/psu.entity';
+import { GetAllProductInput } from './types/get.all.product.input';
 
 @Injectable()
-export class PsuProductService {
+export class PsuService {
   constructor(
     private readonly psuRepo: PsuRepository,
     private readonly productService: ProductService,
   ) {}
+
+  async getAllPsus(queryParams: GetAllProductInput) {
+    const { page = 1, size = 10, category_id } = queryParams;
+
+    const [psus, total] = await this.psuRepo.findAll(
+      {
+        skip: (page - 1) * size,
+        take: size,
+      },
+      category_id,
+    );
+
+    const totalPages = Math.ceil(total / size);
+
+    return {
+      total,
+      totalPages,
+      currentPage: page,
+      psus,
+    };
+  }
 
   async create(input: CreatePsuInput) {
     const product = await this.productService.createProduct({
@@ -19,7 +41,7 @@ export class PsuProductService {
       description: input.description,
       price: input.price,
       stock: input.stock,
-      category: input.category,
+      category_id: input.category_id,
       images: input.images,
       is_active: input.is_active,
       type: ProductType.POWER_SUPPLY,
@@ -31,7 +53,13 @@ export class PsuProductService {
     psu.efficiency_rating = input.efficiency_rating;
     psu.form_factor = input.form_factor;
     psu.modular = input.modular;
-    psu.atx12vVersion = input.atx12vVersion;
+    psu.input_voltage = input.input_voltage;
+    psu.fan_size = input.fan_size;
+    psu.fan_speed = input.fan_speed;
+    psu.noise_level = input.noise_level;
+    psu.fan_bearing = input.fan_bearing;
+    psu.rgb = input.rgb;
+    psu.atx12v_version = input.atx12v_version;
     psu.protection_features = input.protection_features;
     psu.pcie_connectors = input.pcie_connectors;
     psu.sata_connectors = input.sata_connectors;
@@ -47,16 +75,16 @@ export class PsuProductService {
       throw new NotFoundException(`PSU with id ${input.id} not found`);
     }
 
-    await this.productService.updateProduct({
-      id: input.id,
-      name: input.name,
-      description: input.description,
-      price: input.price,
-      stock: input.stock,
-      category: input.category,
-      images: input.images,
-      is_active: input.is_active,
-    });
+    // await this.productService.updateProduct({
+    //   id: input.id,
+    //   name: input.name,
+    //   description: input.description,
+    //   price: input.price,
+    //   stock: input.stock,
+    //   category_id: input.category_id,
+    //   images: input.images,
+    //   is_active: input.is_active,
+    // });
 
     Object.assign(psu, input);
     return await this.psuRepo.update(input.id, psu);
@@ -70,7 +98,11 @@ export class PsuProductService {
     return psu;
   }
 
-  async findAll() {
-    return await this.psuRepo.findAll();
+  async delete(id: number) {
+    const psu = await this.psuRepo.findById(id);
+    if (!psu) {
+      throw new NotFoundException(`PSU with id ${id} not found`);
+    }
+    return await this.psuRepo.delete(id);
   }
 }

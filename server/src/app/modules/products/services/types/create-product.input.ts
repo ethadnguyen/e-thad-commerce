@@ -5,9 +5,9 @@ export interface CreateProductInput {
   description: string;
   price: number;
   stock: number;
-  category: number;
+  category_id: number | number[];
   images?: string[];
-  // specifications?: object;
+  specifications?: object;
   type: ProductType;
   is_active?: boolean;
 }

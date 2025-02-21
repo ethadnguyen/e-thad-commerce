@@ -1,18 +1,16 @@
 import {
   Column,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn,
-  OneToOne,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Category } from '../../categories/entities/categories.entity';
 import { ProductType } from '../enums/product-type.enum';
-import { CPU } from './cpu.entity';
-import { GPU } from './gpu.entity';
-
+import { Review } from '../../reviews/entities/review.entity';
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn({
@@ -47,11 +45,11 @@ export class Product {
   @Column('simple-array', { nullable: true })
   images: string[];
 
-  // @Column({
-  //   type: 'jsonb',
-  //   nullable: true,
-  // })
-  // specifications: object;
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  specifications: object;
 
   @Column({
     type: 'boolean',
@@ -59,9 +57,17 @@ export class Product {
   })
   is_active: boolean;
 
-  @ManyToOne(() => Category, { nullable: false })
-  @JoinColumn({ name: 'category_id' })
-  category: Category;
+  @ManyToMany(() => Category)
+  @JoinTable({
+    name: 'product_categories',
+    joinColumn: {
+      name: 'product_id',
+    },
+    inverseJoinColumn: {
+      name: 'category_id',
+    },
+  })
+  categories: Category[];
 
   @Column({
     type: 'enum',
@@ -69,12 +75,6 @@ export class Product {
     nullable: true,
   })
   type: ProductType;
-
-  @OneToOne(() => CPU, (cpu) => cpu.product, { cascade: true })
-  cpu?: CPU;
-
-  @OneToOne(() => GPU, (gpu) => gpu.product, { cascade: true })
-  gpu?: GPU;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -17,7 +17,7 @@ export class RAM {
     type: 'enum',
     enum: RamType,
   })
-  type: RamType;
+  ram_type: RamType;
 
   @Column()
   speed: number;
@@ -42,7 +42,7 @@ export class RAM {
     type: 'enum',
     enum: ModuleType,
   })
-  moduleType: ModuleType;
+  module_type: ModuleType;
 
   @Column({ default: false })
   ecc_support: boolean;
@@ -57,5 +57,5 @@ export class RAM {
   rgb: boolean;
 
   @Column({ default: false })
-  heatSpreader: boolean;
+  heat_spreader: boolean;
 }

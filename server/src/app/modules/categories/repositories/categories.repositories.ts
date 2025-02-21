@@ -25,6 +25,13 @@ export class CategoryRepository {
     });
   }
 
+  async findByIds(ids: number[]): Promise<Category[]> {
+    return await this.repo.find({
+      where: { id: In(ids) },
+      relations: ['children', 'parent'],
+    });
+  }
+
   async findAll(paginationOptions: {
     skip: number;
     take: number;

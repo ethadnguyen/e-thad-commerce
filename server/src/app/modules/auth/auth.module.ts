@@ -8,10 +8,12 @@ import { AuthService } from './services/auth.service';
 import { UserRepository } from '../users/repositories/user.repositories';
 import { InvalidatedTokenRepository } from '../invalidated_token/repositories/invalidated_token.repositories';
 import { AuthController } from './controllers/auth.controller';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, InvalidatedToken]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

@@ -14,21 +14,44 @@ export class GpuRepository {
     return await this.gpuRepo.save(gpu);
   }
 
-  async findAll(): Promise<GPU[]> {
-    return await this.gpuRepo.find({
-      relations: ['product'],
-    });
+  async findAll(
+    paginationOptions: {
+      skip: number;
+      take: number;
+    },
+    category_id?: number,
+  ): Promise<[GPU[], number]> {
+    const queryBuilder = this.gpuRepo.createQueryBuilder('gpu');
+
+    queryBuilder
+      .leftJoinAndSelect('gpu.product', 'product')
+      .leftJoinAndSelect('product.categories', 'categories');
+
+    if (category_id) {
+      queryBuilder.andWhere('categories.id = :category_id', { category_id });
+    }
+
+    queryBuilder
+      .orderBy('product.created_at', 'DESC')
+      .skip(paginationOptions.skip)
+      .take(paginationOptions.take);
+
+    const [gpus, total] = await queryBuilder.getManyAndCount();
+    return [gpus, total];
   }
 
   async findById(id: number): Promise<GPU> {
-    return this.gpuRepo.findOne({
-      where: { id },
-      relations: ['product'],
-    });
+    return await this.gpuRepo
+      .createQueryBuilder('gpu')
+      .leftJoinAndSelect('gpu.product', 'product')
+      .leftJoinAndSelect('product.categories', 'categories')
+      .where('gpu.id = :id', { id })
+      .getOne();
   }
 
-  async update(id: number, gpu: Partial<GPU>): Promise<void> {
+  async update(id: number, gpu: Partial<GPU>): Promise<GPU> {
     await this.gpuRepo.update(id, gpu);
+    return this.findById(id);
   }
 
   async delete(id: number): Promise<void> {

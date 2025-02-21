@@ -12,6 +12,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/users/user.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
+import { ReviewModule } from './modules/reviews/review.module';
+import { GlobalModule } from 'src/common/global/global.module';
+import { AddressModule } from './modules/address/address.module';
+import { OrderModule } from './modules/orders/order.module';
 
 @Module({
   imports: [
@@ -20,13 +24,17 @@ import { PermissionModule } from './modules/permission/permission.module';
       isGlobal: true,
     }),
     DatabaseModule,
+    GlobalModule,
     PassportModule,
     AuthModule,
+    AddressModule,
     UserModule,
     RoleModule,
     PermissionModule,
     CategoryModule,
     ProductModule,
+    OrderModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [

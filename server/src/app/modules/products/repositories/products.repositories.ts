@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
 import { Product } from '../entities/products.entity';
 import { CPU } from '../entities/cpu.entity';
 import { ProductType } from '../enums/product-type.enum';
@@ -9,58 +9,56 @@ import { ProductType } from '../enums/product-type.enum';
 export class ProductRepository {
   constructor(
     @InjectRepository(Product)
-    private repo: Repository<Product>,
+    private readonly productRepo: Repository<Product>,
   ) {}
 
   async create(product: Product): Promise<Product> {
-    const savedProduct = await this.repo.save(product);
-    return await this.repo.findOne({
+    const savedProduct = await this.productRepo.save(product);
+    return await this.productRepo.findOne({
       where: { id: savedProduct.id },
-      relations: ['category'],
+      relations: ['categories'],
     });
   }
 
   async findById(id: number): Promise<Product> {
-    const queryBuilder = this.repo
+    return await this.productRepo
       .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.cpu', 'cpu')
-      .leftJoinAndSelect('product.gpu', 'gpu')
-      .where('product.id = :id', { id });
-
-    return await queryBuilder.getOne();
+      .leftJoinAndSelect('product.categories', 'categories')
+      .where('product.id = :id', { id })
+      .getOne();
   }
 
   async findAll(
-    PaginationOptions: {
+    paginationOptions: {
       skip: number;
       take: number;
     },
-    category?: number,
+    category_id?: number,
   ): Promise<[Product[], number]> {
-    const queryBuilder = this.repo
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.cpu', 'cpu')
-      .leftJoinAndSelect('product.gpu', 'gpu');
+    const queryBuilder = this.productRepo.createQueryBuilder('product');
 
-    if (category) {
-      queryBuilder.andWhere('category.id = :category', { category });
+    queryBuilder.leftJoinAndSelect('product.categories', 'categories');
+
+    if (category_id) {
+      queryBuilder.andWhere('categories.id = :category_id', { category_id });
     }
 
-    queryBuilder.orderBy('product.created_at', 'DESC');
-    return await queryBuilder.getManyAndCount();
+    queryBuilder
+      .orderBy('product.created_at', 'DESC')
+      .skip(paginationOptions.skip)
+      .take(paginationOptions.take);
+
+    const [products, total] = await queryBuilder.getManyAndCount();
+
+    return [products, total];
   }
 
-  async update(id: number, product: Product): Promise<Product> {
-    await this.repo.update(id, product);
-    return await this.repo.findOne({
-      where: { id },
-      relations: ['category'],
-    });
+  async update(product: Product): Promise<Product> {
+    const savedProduct = await this.productRepo.save(product);
+    return await this.findById(savedProduct.id);
   }
 
   async delete(id: number): Promise<void> {
-    await this.repo.delete(id);
+    await this.productRepo.delete(id);
   }
 }

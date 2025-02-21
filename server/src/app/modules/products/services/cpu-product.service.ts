@@ -1,31 +1,47 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CPU } from '../entities/cpu.entity';
-import { CreateCpuInput } from './types/create-cpu.input';
+import { CreateCpuInput } from './types/cpu_types/create-cpu.input';
 import { CpuRepository } from '../repositories/cpu.repositories';
-import { UpdateCpuInput } from './types/update-cpu.input';
+import { UpdateCpuInput } from './types/cpu_types/update-cpu.input';
 import { ProductService } from './products.service';
 import { ProductType } from '../enums/product-type.enum';
+import { GetAllProductInput } from './types/get.all.product.input';
 
 @Injectable()
-export class CpuProductService {
+export class CpuService {
   constructor(
     private readonly cpuRepo: CpuRepository,
     private readonly productService: ProductService,
   ) {}
 
-  async findAllCPU() {
-    return await this.cpuRepo.findAll();
+  async getAllCPUs(queryParams: GetAllProductInput) {
+    const { page = 1, size = 10, category_id } = queryParams;
+
+    const [cpus, total] = await this.cpuRepo.findAll(
+      {
+        skip: (page - 1) * size,
+        take: size,
+      },
+      category_id,
+    );
+
+    const totalPages = Math.ceil(total / size);
+
+    return {
+      total,
+      totalPages,
+      currentPage: page,
+      cpus,
+    };
   }
 
   async create(input: CreateCpuInput) {
-    // Tạo product trước
     const product = await this.productService.createProduct({
       name: input.name,
       description: input.description,
       price: input.price,
       stock: input.stock,
-      category: input.category,
+      category_id: input.category_id,
       images: input.images,
       is_active: input.is_active,
       type: ProductType.CPU,
@@ -34,13 +50,23 @@ export class CpuProductService {
     // Sau đó tạo CPU với id từ product
     const cpu = new CPU();
     cpu.id = product.id;
-    cpu.socketType = input.socketType;
+    cpu.socket_type = input.socket_type;
     cpu.cores = input.cores;
     cpu.threads = input.threads;
     cpu.baseClock = input.baseClock;
     cpu.boostClock = input.boostClock;
+    cpu.wattage = input.wattage;
+    cpu.pCores = input.pCores;
+    cpu.eCores = input.eCores;
+    cpu.pCoreBaseClock = input.pCoreBaseClock;
+    cpu.pCoreBoostClock = input.pCoreBoostClock;
+    cpu.eCoreBaseClock = input.eCoreBaseClock;
+    cpu.eCoreBoostClock = input.eCoreBoostClock;
     cpu.cache = input.cache;
     cpu.tdp = input.tdp;
+    cpu.pcie_version = input.pcie_version;
+    cpu.pcie_slots = input.pcie_slots;
+    cpu.max_memory_capacity = input.max_memory_capacity;
     cpu.product = product;
 
     return await this.cpuRepo.create(cpu);
@@ -52,27 +78,19 @@ export class CpuProductService {
       throw new NotFoundException(`CPU with id ${input.id} not found`);
     }
 
-    // Update product info
-    await this.productService.updateProduct({
-      id: input.id,
-      name: input.name,
-      description: input.description,
-      price: input.price,
-      stock: input.stock,
-      category: input.category,
-      images: input.images,
-      is_active: input.is_active,
-    });
+    // await this.productService.updateProduct({
+    //   id: input.id,
+    //   name: input.name,
+    //   description: input.description,
+    //   price: input.price,
+    //   stock: input.stock,
+    //   category_id: input.category_id,
+    //   images: input.images,
+    //   is_active: input.is_active,
+    // });
 
     // Update CPU info
-    if (input.socketType) cpu.socketType = input.socketType;
-    if (input.cores) cpu.cores = input.cores;
-    if (input.threads) cpu.threads = input.threads;
-    if (input.baseClock) cpu.baseClock = input.baseClock;
-    if (input.boostClock) cpu.boostClock = input.boostClock;
-    if (input.cache) cpu.cache = input.cache;
-    if (input.tdp) cpu.tdp = input.tdp;
-
+    Object.assign(cpu, input);
     return await this.cpuRepo.update(input.id, cpu);
   }
 
@@ -82,5 +100,13 @@ export class CpuProductService {
       throw new NotFoundException(`CPU with id ${id} not found`);
     }
     return cpu;
+  }
+
+  async delete(id: number) {
+    const cpu = await this.cpuRepo.findById(id);
+    if (!cpu) {
+      throw new NotFoundException(`CPU with id ${id} not found`);
+    }
+    return await this.cpuRepo.delete(id);
   }
 }

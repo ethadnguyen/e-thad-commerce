@@ -4,6 +4,9 @@ import { ProductType } from '../../enums/product-type.enum';
 
 export class ProductRes {
   @ApiProperty()
+  id: number;
+
+  @ApiProperty()
   name: string;
 
   @ApiProperty()
@@ -18,14 +21,11 @@ export class ProductRes {
   @ApiProperty({ type: [String] })
   images: string[];
 
-  // @ApiProperty()
-  // specifications: object;
-
   @ApiProperty()
   is_active: boolean;
 
-  @ApiProperty()
-  category: CategoryRes;
+  @ApiProperty({ type: [CategoryRes] })
+  categories: CategoryRes[];
 
   @ApiProperty({ enum: ProductType })
   type: ProductType;

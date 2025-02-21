@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   Tree,
@@ -33,9 +34,6 @@ export class Category {
 
   @TreeParent()
   parent: Category;
-
-  @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
 
   @Column({
     type: 'boolean',

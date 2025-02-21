@@ -8,5 +8,5 @@ export class GetAllProductReq extends PaginationReq {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) => parseInt(value, 10), { toClassOnly: true })
-  category: number;
+  category_id: number;
 }

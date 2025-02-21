@@ -12,6 +12,7 @@ import { LoginRes } from './types/login.res';
 import { LoginReq } from './types/login.req';
 import { RefreshTokenRes } from './types/refresh_token.res';
 import { RefreshTokenReq } from './types/refresh_token.req';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -19,6 +20,7 @@ import { RefreshTokenReq } from './types/refresh_token.req';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   @HttpCode(200)
   @ApiResponse({
@@ -43,6 +45,7 @@ export class AuthController {
     this.authService.logout(token);
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(200)
   @ApiResponse({

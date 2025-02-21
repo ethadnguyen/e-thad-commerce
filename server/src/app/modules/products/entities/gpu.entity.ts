@@ -17,28 +17,55 @@ export class GPU {
   chipset: string;
 
   @Column()
-  memorySize: number;
+  memory_size: number;
 
   @Column({
     type: 'varchar',
     length: 255,
   })
-  memoryType: string;
+  memory_type: string;
+
+  @Column()
+  min_psu_wattage: number;
+
+  @Column()
+  power_connector: string;
 
   @Column({
     type: 'decimal',
     precision: 10,
     scale: 2,
   })
-  coreClock: number;
+  core_clock: number;
 
   @Column({
     type: 'decimal',
     precision: 10,
     scale: 2,
   })
-  boostClock: number;
+  boost_clock: number;
 
   @Column()
   tdp: number;
+
+  @Column()
+  pcie_version: string;
+
+  @Column()
+  slot_size: number;
+
+  @Column()
+  cuda_cores: number;
+
+  @Column()
+  tensor_cores: number;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  display_ports: string;
+
+  @Column()
+  length: number;
 }

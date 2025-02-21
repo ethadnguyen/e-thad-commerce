@@ -1,70 +1,128 @@
-import { notFound } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { products } from '../../../data/products';
-import ImageSlider from '../../../components/ImageSlider';
+import { ImageSlider } from '@/components/image-slider';
+import { ProductActions } from '@/components/product-actions';
+import { Specifications } from '@/components/specifications';
+import { ReviewsSection } from '@/components/reviews-section';
+import { SimilarProducts } from '@/components/similar-products';
 
-export default function ProductDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const product = products.find((p) => p.id === parseInt(params.id));
+// Example data - In a real app, this would come from your database
+const product = {
+  id: '1',
+  name: 'AMD Ryzen 9 7950X',
+  price: 699,
+  rating: 5,
+  images: [
+    '/placeholder.svg?height=600&width=600',
+    '/placeholder.svg?height=600&width=600',
+    '/placeholder.svg?height=600&width=600',
+    '/placeholder.svg?height=600&width=600',
+  ],
+  type: 'CPU' as const,
+  specs: {
+    cores: 16,
+    threads: 32,
+    baseSpeed: '4.5 GHz',
+    boostSpeed: '5.7 GHz',
+    socket: 'AM5',
+    cache: {
+      l1: '1MB',
+      l2: '16MB',
+      l3: '64MB',
+    },
+    tdp: 170,
+    integratedGraphics: 'AMD Radeon Graphics',
+  },
+};
 
-  if (!product) {
-    notFound();
-  }
+const reviews = [
+  {
+    id: '1',
+    rating: 5,
+    comment: 'Great CPU, amazing performance!',
+    author: 'John Doe',
+    date: '2024-02-15',
+  },
+  {
+    id: '2',
+    rating: 4,
+    comment: 'Good performance but runs a bit hot.',
+    author: 'Jane Smith',
+    date: '2024-02-14',
+  },
+  {
+    id: '3',
+    rating: 5,
+    comment: "Best CPU I've ever used.",
+    author: 'Mike Johnson',
+    date: '2024-02-13',
+  },
+];
 
-  // For demonstration purposes, we'll create multiple images
-  const productImages = [
-    product.image,
-    '/placeholder.svg?height=300&width=300',
-    '/placeholder.svg?height=300&width=300',
-  ];
+const similarProducts = [
+  {
+    id: '2',
+    name: 'AMD Ryzen 7 7700X',
+    price: 449,
+    image: '/placeholder.svg?height=400&width=400',
+  },
+  {
+    id: '3',
+    name: 'AMD Ryzen 5 7600X',
+    price: 299,
+    image: '/placeholder.svg?height=400&width=400',
+  },
+  {
+    id: '4',
+    name: 'Intel Core i9-13900K',
+    price: 589,
+    image: '/placeholder.svg?height=400&width=400',
+  },
+  {
+    id: '5',
+    name: 'Intel Core i7-13700K',
+    price: 409,
+    image: '/placeholder.svg?height=400&width=400',
+  },
+  {
+    id: '6',
+    name: 'Intel Core i5-13600K',
+    price: 319,
+    image: '/placeholder.svg?height=400&width=400',
+  },
+];
 
+export default function ProductPage() {
   return (
-    <div className='space-y-8'>
-      <h1 className='text-3xl font-bold'>{product.name}</h1>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-        <Card className='bg-secondary border-primary'>
-          <CardHeader>
-            <CardTitle>Product Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ImageSlider images={productImages} />
-            <p className='text-2xl font-bold mt-4'>${product.price}</p>
-            <p className='mb-2'>
-              <span className='font-semibold'>Category:</span>{' '}
-              {product.categoryId}
-            </p>
-            <p>{product.description}</p>
-          </CardContent>
-          <CardFooter>
-            <Button className='w-full bg-primary text-primary-foreground hover:bg-primary/90'>
-              Add to Cart
-            </Button>
-          </CardFooter>
-        </Card>
-        <Card className='bg-secondary border-primary'>
-          <CardHeader>
-            <CardTitle>Specifications</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className='list-disc list-inside space-y-2'>
-              {product.specs.map((spec, index) => (
-                <li key={index}>{spec}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+    <div className='container mx-auto px-4 py-8 space-y-12'>
+      <div className='grid gap-8 lg:grid-cols-2'>
+        {/* Left column - Image slider and actions */}
+        <div className='space-y-6'>
+          <ImageSlider images={product.images} />
+          <ProductActions
+            price={product.price}
+            rating={product.rating}
+            onAddToWishlist={() => console.log('Add to wishlist')}
+            onBuyNow={() => console.log('Buy now')}
+            onAddToCart={() => console.log('Add to cart')}
+          />
+        </div>
+
+        {/* Right column - Specifications */}
+        <div>
+          <h2 className='text-2xl font-bold mb-4'>Specifications</h2>
+          <Specifications product={product} />
+        </div>
       </div>
+
+      {/* Reviews section */}
+      <ReviewsSection
+        reviews={reviews}
+        onSubmitReview={(comment, rating) => {
+          console.log('New review:', { comment, rating });
+        }}
+      />
+
+      {/* Similar products */}
+      <SimilarProducts products={similarProducts} />
     </div>
   );
 }

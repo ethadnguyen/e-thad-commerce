@@ -24,8 +24,6 @@ import {
 import { ProductListRes } from './types/product-list.res';
 import { GetAllProductReq } from './types/get.all.product.req';
 import { Public } from 'src/common/decorators/public.decorator';
-import { CpuProductService } from '../services/cpu-product.service';
-import { ProductType } from '../enums/product-type.enum';
 
 @ApiTags('Products')
 @Public()

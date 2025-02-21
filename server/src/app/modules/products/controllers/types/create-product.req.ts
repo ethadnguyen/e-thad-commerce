@@ -9,12 +9,8 @@ import {
   Min,
   IsObject,
   IsEnum,
-  ValidateIf,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ProductType } from '../../enums/product-type.enum';
-import { CpuDetailsReq, GpuDetailsReq } from './product-details.req';
 
 export class CreateProductReq {
   @ApiProperty()
@@ -37,9 +33,10 @@ export class CreateProductReq {
   @Min(0)
   stock: number;
 
-  @ApiProperty()
-  @IsNumber()
-  category: number;
+  @ApiProperty({ type: [Number] })
+  @IsArray()
+  @IsNumber({}, { each: true })
+  category_id: number[];
 
   @ApiProperty({ enum: ProductType })
   @IsEnum(ProductType)
@@ -51,25 +48,13 @@ export class CreateProductReq {
   @IsString({ each: true })
   images?: string[];
 
-  // @ApiProperty({ required: false })
-  // @IsOptional()
-  // @IsObject()
-  // specifications?: object;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsObject()
+  specifications?: object;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
   is_active?: boolean;
-
-  @ApiProperty({ required: false })
-  @ValidateIf((o) => o.type === ProductType.CPU)
-  @ValidateNested()
-  @Type(() => CpuDetailsReq)
-  cpuDetails?: CpuDetailsReq;
-
-  @ApiProperty({ required: false })
-  @ValidateIf((o) => o.type === ProductType.GPU)
-  @ValidateNested()
-  @Type(() => GpuDetailsReq)
-  gpuDetails?: GpuDetailsReq;
 }

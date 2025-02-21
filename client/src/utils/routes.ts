@@ -13,7 +13,7 @@ export const routes = {
   cart: { path: '/cart', auth: 'optional' },
   checkout: { path: '/checkout', auth: 'required' },
   auth: {
-    login: { path: '/auth/login', auth: 'forbidden' },
+    login: { path: '/auth/sign-in', auth: 'forbidden' },
     register: { path: '/auth/register', auth: 'forbidden' },
     forgotPassword: { path: '/auth/forgot-password', auth: 'forbidden' },
   },
