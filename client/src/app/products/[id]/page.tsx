@@ -1,8 +1,11 @@
+'use client';
+
 import { ImageSlider } from '@/components/image-slider';
 import { ProductActions } from '@/components/product-actions';
 import { Specifications } from '@/components/specifications';
 import { ReviewsSection } from '@/components/reviews-section';
 import { SimilarProducts } from '@/components/similar-products';
+import { useCallback } from 'react';
 
 // Example data - In a real app, this would come from your database
 const product = {
@@ -91,6 +94,11 @@ const similarProducts = [
 ];
 
 export default function ProductPage() {
+  const handleSubmitReview = useCallback((comment: string, rating: number) => {
+    console.log('New review:', { comment, rating });
+    // Thêm logic gửi review lên server ở đây
+  }, []);
+
   return (
     <div className='container mx-auto px-4 py-8 space-y-12'>
       <div className='grid gap-8 lg:grid-cols-2'>
@@ -114,12 +122,7 @@ export default function ProductPage() {
       </div>
 
       {/* Reviews section */}
-      <ReviewsSection
-        reviews={reviews}
-        onSubmitReview={(comment, rating) => {
-          console.log('New review:', { comment, rating });
-        }}
-      />
+      <ReviewsSection reviews={reviews} onSubmitReview={handleSubmitReview} />
 
       {/* Similar products */}
       <SimilarProducts products={similarProducts} />

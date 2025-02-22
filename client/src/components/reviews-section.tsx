@@ -10,8 +10,8 @@ import { cn } from '@/lib/utils';
 
 interface Review {
   id: string;
-  comment: string;
   rating: number;
+  comment: string;
   author: string;
   date: string;
 }
