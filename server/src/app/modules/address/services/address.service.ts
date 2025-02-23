@@ -3,17 +3,19 @@ import { AddressRepository } from '../repositories/address.repositories';
 import { GoongService } from './goong.service';
 import { Address } from '../entities/address.entity';
 import { GetAllAddressInput } from './types/get.all.address.input';
-import { User } from '../../users/entities/user.entity';
-import { Order } from '../../orders/entities/order.entity';
 import { CreateAddressInput } from './types/create-address.input';
 import { LabelType } from '../enums/label-type.enum';
 import { UpdateAddressInput } from './types/update-address.input';
+import { UserRepository } from '../../users/repositories/user.repositories';
+import { OrderRepository } from '../../orders/repositories/order.repositories';
 
 @Injectable()
 export class AddressService {
   constructor(
     private readonly addressRepository: AddressRepository,
     private readonly goongService: GoongService,
+    private readonly userRepository: UserRepository,
+    private readonly orderRepository: OrderRepository,
   ) {}
 
   async getAllAddresses(queryParams: GetAllAddressInput) {
@@ -53,10 +55,10 @@ export class AddressService {
     address.district = placeDetail.district;
     address.ward = placeDetail.ward;
     address.place_id = input.place_id;
-    address.user = { user_id: input.user_id } as User;
+    address.user = await this.userRepository.findById(input.user_id);
 
     if (input.order_id) {
-      address.order = { id: input.order_id } as Order;
+      address.order = await this.orderRepository.findById(input.order_id);
     }
 
     return this.addressRepository.create(address);
@@ -74,5 +76,27 @@ export class AddressService {
       place_id: input.place_id,
       note: input.note,
     });
+  }
+
+  async getProvinces() {
+    return this.goongService.getProvinces();
+  }
+
+  async getDistricts(provinceId: string) {
+    return this.goongService.getDistricts(provinceId);
+  }
+
+  async getWards(districtId: string) {
+    return this.goongService.getWards(districtId);
+  }
+
+  async suggestAddress(
+    province: string,
+    district: string,
+    ward: string,
+    keyword: string,
+  ) {
+    const searchQuery = `${keyword}, ${ward}, ${district}, ${province}`;
+    return this.goongService.searchPlaces(searchQuery);
   }
 }

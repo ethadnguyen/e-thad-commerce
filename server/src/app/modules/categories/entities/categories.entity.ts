@@ -1,14 +1,11 @@
 import {
   Column,
   Entity,
-  ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
   TreeParent,
 } from 'typeorm';
-import { Product } from '../../products/entities/products.entity';
 
 @Entity('categories')
 @Tree('closure-table')

@@ -65,4 +65,58 @@ export class AddressController {
   async updateAddress(@Body() body: UpdateAddressReq) {
     return this.addressService.updateAddress(body);
   }
+
+  @Public()
+  @Get('provinces')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Get all provinces',
+  })
+  async getProvinces() {
+    return this.addressService.getProvinces();
+  }
+
+  @Public()
+  @Get('districts/:provinceCode')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Get districts by province',
+  })
+  async getDistricts(@Param('provinceCode') provinceCode: string) {
+    return this.addressService.getDistricts(provinceCode);
+  }
+
+  @Public()
+  @Get('wards/:districtCode')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Get wards by district',
+  })
+  async getWards(@Param('districtCode') districtCode: string) {
+    return this.addressService.getWards(districtCode);
+  }
+
+  @Public()
+  @Get('suggest')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Suggest addresses based on selected location',
+  })
+  async suggestAddress(
+    @Query('province') province: string,
+    @Query('district') district: string,
+    @Query('ward') ward: string,
+    @Query('keyword') keyword: string,
+  ) {
+    return this.addressService.suggestAddress(
+      province,
+      district,
+      ward,
+      keyword,
+    );
+  }
 }

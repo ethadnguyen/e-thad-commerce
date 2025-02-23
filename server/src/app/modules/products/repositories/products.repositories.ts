@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions } from 'typeorm';
+import { Repository, FindManyOptions, In } from 'typeorm';
 import { Product } from '../entities/products.entity';
 import { CPU } from '../entities/cpu.entity';
 import { ProductType } from '../enums/product-type.enum';
@@ -26,6 +26,13 @@ export class ProductRepository {
       .leftJoinAndSelect('product.categories', 'categories')
       .where('product.id = :id', { id })
       .getOne();
+  }
+
+  async findByIds(ids: number[]): Promise<Product[]> {
+    return await this.productRepo.find({
+      where: { id: In(ids) },
+      relations: ['categories'],
+    });
   }
 
   async findAll(

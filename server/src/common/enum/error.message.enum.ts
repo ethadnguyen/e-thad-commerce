@@ -15,4 +15,5 @@ export enum ErrorMessage {
   PRODUCT_NOT_FOUND = 'Product not found',
   PERMISSION_NOT_FOUND = 'Permission not found',
   PERMISSION_EXISTS = 'Permission exists',
+  PROMOTION_NOT_FOUND = 'Promotion not found',
 }

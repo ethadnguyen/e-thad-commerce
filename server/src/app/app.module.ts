@@ -16,6 +16,7 @@ import { ReviewModule } from './modules/reviews/review.module';
 import { GlobalModule } from 'src/common/global/global.module';
 import { AddressModule } from './modules/address/address.module';
 import { OrderModule } from './modules/orders/order.module';
+import { PromotionModule } from './modules/promotions/promotion.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { OrderModule } from './modules/orders/order.module';
     ProductModule,
     OrderModule,
     ReviewModule,
+    PromotionModule,
   ],
   controllers: [AppController],
   providers: [
